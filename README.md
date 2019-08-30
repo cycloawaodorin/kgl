@@ -22,7 +22,7 @@ An alias of original `Math.#log`. It returns the natural logarithm of `anti_loga
 ### `Math.#log(base, anti_logarithm=base.tap{base=Math::E})`
 Returns the logarithm of `anti_logarithm` to base `base`.
 
-### `Math.#lg(anti_logarithm)
+### `Math.#lg(anti_logarithm)`
 Returns the logarithm of `anti_logarithm` to base 2.
 
 ### `Float#to_r`, `String#to_r`
