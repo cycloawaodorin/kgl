@@ -28,6 +28,10 @@ Returns the logarithm of `anti_logarithm` to base 2.
 ### `Float#to_r`, `String#to_r`
 Returns `Rational` value of `self`.
 
+### `Integer#to_msm(fps=60)`
+Returns `"[minutes]:[seconds].[milliseconds]"` which corresponds to `self` frames.
+The submilliseconds will be rounded. `fps` is frames per second.
+
 ## License
 
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
