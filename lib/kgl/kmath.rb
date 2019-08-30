@@ -1,8 +1,12 @@
 module Math
 	alias ln log
 	module_function
-	def log(base, anti_logarithm)
-		ln(anti_logarithm).quo(ln(base))
+	def log(base, anti_logarithm=base.tap{base=nil})
+		if base.nil?
+			ln(angi_logarithm)
+		else
+			ln(anti_logarithm).quo(ln(base))
+		end
 	end
 	def lg(anti_logarithm)
 		log(2, anti_logarithm)
