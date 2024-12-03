@@ -10,3 +10,18 @@ class Integer
 		%Q|#{m}:#{s}.#{ms}|
 	end
 end
+
+module Kgl
+	module_function def rpw(n, sym='!#$%&*+,-./:;<=>?@')
+		ls = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789' + sym
+		m = ls.length
+		`openssl rand #{n}`.bytes.map do |i|
+			while m <= i
+				i = `openssl rand 1`.bytes[0]
+			end
+			ls[i]
+		end.join
+	rescue Errno::ENOENT => e
+		raise 'Kgl.#rpw requires openssl command'
+	end
+end
