@@ -28,6 +28,10 @@ Returns the logarithm of `anti_logarithm` to base 2.
 ### `Float#to_r`, `String#to_r`
 Returns `Rational` value of `self`.
 
+### `Float#to_r_exact`
+Returns exact `Rational` value of `self`, that may not be desirable for usual usage.
+For instance, (0.1).to_r_exact returns (3602879701896397/36028797018963968) while (0.1).to_r returns (1/10).
+
 ### `Integer#to_msm(fps=59.94)`
 Returns `"[minutes]:[seconds].[milliseconds]"` which corresponds to `self` frames.
 The submilliseconds will be rounded. `fps` is frames per second.

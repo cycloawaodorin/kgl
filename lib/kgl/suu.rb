@@ -1,4 +1,4 @@
-# 整数を日本語等で表した時の文字列(self<0ならnil)を返すメソッド Integer#express を提供する。
+# 整数を日本語等で表した時の文字列(self<0ならRangeError)を返すメソッド Integer#express を提供する。
 # 補助的に使用する定数や関数は Integer::SuuConstantsAndSubFunctions モジュールで定義されている。
 # Integer クラスでこのモジュールを include している。
 # 第一引数 lang には文字列を与える。
@@ -8,20 +8,20 @@
 #   ただの Integer#to_s 。
 # f: 浮動小数点数
 #   第二引数 acc を使用する。
-#   ほぼ "%1.#{acc-1}e" % self.to_f と同じだが，Floatの範囲外の大きな整数でも使える。
+#   ほぼ "%1.#{acc-1}e" % self.to_f と同じだが，Float の範囲外の大きな整数でも使える。
 #   acc が1未満の場合は ArgumentError を発生。
 # j: 日本語
 #   一般に用いられる万進法による中数である。極以上を万万進とすることや，無量大数を分けることはしない。
 #   千～においては省略しないこともままあるが，ここでは十，百，千～の位が1のとき一の文字を省略する。
 #   千無量大数の十倍以上の数は表わせないので RangeError を発生。
-#   参考：無量大数の彼方へ(http://www.sf.airnet.ne.jp/ts/language/largenumber.html)
+#   参考：無量大数の彼方へ (http://www.sf.airnet.ne.jp/ts/language/largenumber.html)
 # m: 中数(万万進)。
 #   日本語のように十，百，千～の位が1のとき一の文字を省略するのか定かでないが，ここでは省略しないことにした。
 #   一千万無量大数の十倍以上の数は表わせないので RangeError を発生。
-#   参考：無量大数の彼方へ(http://www.sf.airnet.ne.jp/ts/language/largenumber.html)
+#   参考：無量大数の彼方へ (http://www.sf.airnet.ne.jp/ts/language/largenumber.html)
 # a: 英語(アメリカ式)
 # b: 英語(ヨーロッパ式)
-#   参考：Name of a Number(http://isthe.com/chongo/tech/math/number/number.html)
+#   参考：Name of a Number (http://isthe.com/chongo/tech/math/number/number.html)
 class Integer
 	module SuuConstantsAndSubFunctions
 		Ichi = ['零', '一', '二', '三', '四', '五', '六', '七', '八', '九'].freeze
