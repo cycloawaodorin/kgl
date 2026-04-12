@@ -1,7 +1,10 @@
 # Change Log
 
+## 0.0.5 2026/04/12
+- `Float#to_r` and `Float#to_r_exact` raise `FloatDomainError` when `self` is not finite.
+
 ## 0.0.4 2026/04/02
-- Add `Float#to_r_exact` that returns exact Rational value expressed by self.
+- Add `Float#to_r_exact` that returns exact Rational value expressed by `self`.
 
 ## 0.0.3 2024/12/03
 - Add `Kgl.#rpw`.

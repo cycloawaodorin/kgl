@@ -15,6 +15,9 @@ end
 
 class Float
 	def to_r
+		unless self.finite?
+			raise FloatDomainError
+		end
 		str = self.to_s
 		(decimal, power) = str.split(/e/)
 		(integer, decimal) = decimal.split(/\./)
@@ -30,6 +33,9 @@ class Float
 		return Rational(numerator, denominator)
 	end
 	def to_r_exact
+		unless self.finite?
+			raise FloatDomainError
+		end
 		s, e = Math.frexp(self)
 		if e < 53
 			Rational(Math.ldexp(s, 53).to_i, 1<<(53-e))
