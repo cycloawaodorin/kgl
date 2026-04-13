@@ -1,5 +1,8 @@
 # Change Log
 
+## 0.0.6 2026/04/13
+- Add `Rational#approx_reduction` and refine `Float#to_r` by using this method.
+
 ## 0.0.5 2026/04/12
 - `Float#to_r` and `Float#to_r_exact` raise `FloatDomainError` when `self` is not finite.
 
