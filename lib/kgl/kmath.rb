@@ -13,32 +13,70 @@ module Math
 	end
 end
 
-class Float
-	def to_r
-		unless self.finite?
-			raise FloatDomainError
+class Rational
+	protected def kglsize
+		[self.numerator.abs, self.denominator].min
+	end
+	protected def kgldiff(other)
+		(self-other).abs
+	end
+	def approx_reduction(dig=8, depth=16, org=self)
+		return self if depth <= 0
+		self.to_f rescue return self
+		ret, app = self, self
+		if (1<<(dig*2)) < self.kglsize
+			1.upto(1<<dig) do |i|
+				[[0, i], [0, -i], [i, 0], [-i, 0]].each do |n, d|
+					q = Rational(numerator+n, denominator+d)
+					if q.kglsize < ret.kglsize
+						if q.kgldiff(org) <= ret.kgldiff(org)
+							ret = q 
+						elsif q.kglsize < app.kglsize
+							app = q
+						end
+					end
+				end
+				1.upto(i) do |j|
+					[[j, i], [j, -i], [-j, i], [-j, -i]].each do |a, b|
+						q = Rational(numerator+a, denominator+b)
+						if q.kglsize < ret.kglsize
+							if q.kgldiff(org) <= ret.kgldiff(org)
+								ret = q 
+							elsif q.kglsize < app.kglsize
+								app = q
+							end
+						end
+						q = Rational(numerator+b, denominator+a)
+						if q.kglsize < ret.kglsize
+							if q.kgldiff(org) <= ret.kgldiff(org)
+								ret = q 
+							elsif q.kglsize < app.kglsize
+								app = q
+							end
+						end
+					end
+				end
+			end
 		end
-		str = self.to_s
-		(decimal, power) = str.split(/e/)
-		(integer, decimal) = decimal.split(/\./)
-		length = decimal.length
-		numerator = integer.to_i*10**length+decimal.to_i
-		denominator = 10**length
-		power = power.to_i
-		if power > 0
-			numerator *= 10**power
+		if ret.kglsize < self.kglsize
+			ret.approx_reduction(dig, depth-1, org)
 		else
-			denominator *= 10**(-power)
+			app.approx_reduction(dig, depth-1, org)
 		end
-		return Rational(numerator, denominator)
+	end
+end
+
+class Float
+	def to_r(th=8)
+		r = self.to_r_exact
+		q = r.approx_reduction
+		q.to_f == self ? q : r
 	end
 	def to_r_exact
-		unless self.finite?
-			raise FloatDomainError
-		end
+		raise FloatDomainError, self.inspect unless self.finite?
 		s, e = Math.frexp(self)
-		if e < 53
-			Rational(Math.ldexp(s, 53).to_i, 1<<(53-e))
+		if e < MANT_DIG
+			Rational(Math.ldexp(s, MANT_DIG).to_i, 1<<(MANT_DIG-e))
 		else
 			Rational(self.to_i, 1)
 		end
