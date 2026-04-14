@@ -1,15 +1,18 @@
+class << Math
+	alias ln log
+end
 module Math
 	alias ln log
 	module_function
 	def log(base, anti_logarithm=base.tap{base=nil})
 		if base.nil?
-			ln(angi_logarithm)
+			ln(anti_logarithm)
 		else
 			ln(anti_logarithm).quo(ln(base))
 		end
 	end
 	def lg(anti_logarithm)
-		log(2, anti_logarithm)
+		log(2.0, anti_logarithm)
 	end
 end
 
@@ -67,9 +70,9 @@ class Rational
 end
 
 class Float
-	def to_r(th=8)
+	def to_r(dig=8)
 		r = self.to_r_exact
-		q = r.approx_reduction
+		q = r.approx_reduction(dig)
 		q.to_f == self ? q : r
 	end
 	def to_r_exact
