@@ -1,6 +1,9 @@
 # Change Log
 
-## 0.0.7
+## 0.0.8 2026/04/15
+- `Rational#approx_reduction(true)` includes only better approximations.
+
+## 0.0.7 2026/04/15
 - Fix missing the alias of `Math.ln` from `Math.log`.
 - Refine `Float#to_r` and `Rational#approx_reduction`.
 
