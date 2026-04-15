@@ -1,5 +1,9 @@
 # Change Log
 
+## 0.0.7
+- Fix missing the alias of `Math.ln` from `Math.log`.
+- Refine `Float#to_r` and `Rational#approx_reduction`.
+
 ## 0.0.6 2026/04/13
 - Add `Rational#approx_reduction` and refine `Float#to_r` by using this method.
 

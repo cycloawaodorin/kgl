@@ -1,84 +1,162 @@
+class << Math
+	alias ln log
+end
 module Math
 	alias ln log
 	module_function
 	def log(base, anti_logarithm=base.tap{base=nil})
 		if base.nil?
-			ln(angi_logarithm)
+			ln(anti_logarithm)
 		else
 			ln(anti_logarithm).quo(ln(base))
 		end
 	end
 	def lg(anti_logarithm)
-		log(2, anti_logarithm)
+		log(2.0, anti_logarithm)
 	end
 end
 
 class Rational
-	protected def kglsize
-		[self.numerator.abs, self.denominator].min
-	end
-	protected def kgldiff(other)
-		(self-other).abs
-	end
-	def approx_reduction(dig=8, depth=16, org=self)
-		return self if depth <= 0
-		self.to_f rescue return self
-		ret, app = self, self
-		if (1<<(dig*2)) < self.kglsize
-			1.upto(1<<dig) do |i|
-				[[0, i], [0, -i], [i, 0], [-i, 0]].each do |n, d|
-					q = Rational(numerator+n, denominator+d)
-					if q.kglsize < ret.kglsize
-						if q.kgldiff(org) <= ret.kgldiff(org)
-							ret = q 
-						elsif q.kglsize < app.kglsize
-							app = q
-						end
-					end
-				end
-				1.upto(i) do |j|
-					[[j, i], [j, -i], [-j, i], [-j, -i]].each do |a, b|
-						q = Rational(numerator+a, denominator+b)
-						if q.kglsize < ret.kglsize
-							if q.kgldiff(org) <= ret.kgldiff(org)
-								ret = q 
-							elsif q.kglsize < app.kglsize
-								app = q
-							end
-						end
-						q = Rational(numerator+b, denominator+a)
-						if q.kglsize < ret.kglsize
-							if q.kgldiff(org) <= ret.kgldiff(org)
-								ret = q 
-							elsif q.kglsize < app.kglsize
-								app = q
-							end
-						end
-					end
+	def approx_reduction(all=false)
+		if self.numerator == 0
+			return self unless all
+			d = 0
+			d += 1 while Rational(1, 1<<d).to_f != 0.0
+			n = 1<<d
+			(d-1).downto(0) do |i|
+				e = (1<<i)
+				n -= e if Rational(1, n-e).to_f == 0.0
+			end
+			return [Rational(-1, n), Rational(1, n)]
+		elsif self.denominator == 1
+			s = self < 0 ? -1 : 1
+			d, n = 0, self.numerator.abs
+			f = n.to_f
+			d += 1 while (n-(1<<d)).to_f == f
+			(d-1).downto(0) do |i|
+				e = (1<<i)
+				n -= e if (n-e).to_f == f
+			end
+			r = Rational(n*s, 1)
+			return r unless all
+			d, n = 0, self.numerator.abs
+			d += 1 while (n+(1<<d)).to_f == f
+			(d-1).downto(0) do |i|
+				e = (1<<i)
+				n += e if (n+e).to_f == f
+			end
+			if n == r.numerator.abs
+				return [r]
+			else
+				return [r, Rational(n*s, 1)]
+			end
+		elsif self.numerator.abs == 1
+			d, n = 0, self.denominator
+			f = self.to_f.abs
+			if f == 0.0
+				unless all
+					return Rational(0, 1).approx_reduction(true)[self.numerator<0 ? 0 : 1]
+				else
+					return Rational(0, 1).approx_reduction(true)
 				end
 			end
-		end
-		if ret.kglsize < self.kglsize
-			ret.approx_reduction(dig, depth-1, org)
+			d += 1 while Rational(1, n-(1<<d)).to_f == f
+			(d-1).downto(0) do |i|
+				e = (1<<i)
+				n -= e if Rational(1, n-e).to_f == f
+			end
+			r = Rational(self.numerator, n)
+			return r unless all
+			d, n = 0, self.denominator
+			d += 1 while Rational(1, n+(1<<d)).to_f == f
+			(d-1).downto(0) do |i|
+				e = (1<<i)
+				n += e if Rational(1, n+e).to_f == f
+			end
+			if n == r.denominator
+				return [r]
+			else
+				return [r, Rational(self.numerator, n)]
+			end
 		else
-			app.approx_reduction(dig, depth-1, org)
+			s = self < 0 ? -1 : 1
+			q = self.abs
+			if q.denominator < q.numerator
+				l = [q.numerator.div(q.denominator), 1]
+				h = [l[0]+1, 1]
+			else
+				h = [1, q.denominator.div(q.numerator)]
+				l = [1, h[1]+1]
+			end
+			res = [Rational(*l)]
+			r = Rational(*h)
+			foo, bar = (r-q).abs, (res[0]-q).abs
+			res = [r] if foo < bar || ( foo == bar && h.min < l.min )
+			i = 0
+			loop do
+				m = [l[0]+h[0], l[1]+h[1]]
+				r = Rational(*m)
+				if q.denominator <= r.denominator
+					return all ? res : res[-1]
+				elsif r < q
+					l = m
+				else
+					h = m
+				end
+				res << r*s
+			end
 		end
 	end
 end
 
 class Float
-	def to_r(th=8)
-		r = self.to_r_exact
-		q = r.approx_reduction
-		q.to_f == self ? q : r
+	if method_defined?(:to_r)
+		alias to_r_exact to_r
+	else
+		def to_r_exact
+			raise FloatDomainError, self.inspect unless self.finite?
+			if RADIX == 2
+				md = MANT_DIG
+			else
+				md = (MANT_DIG*Math.lg(RADIX)).floor
+			end
+			s, e = Math.frexp(self)
+			if e < md
+				Rational(Math.ldexp(s, md).to_i, 1<<(md-e))
+			else
+				Rational(self.to_i, 1)
+			end
+		end
 	end
-	def to_r_exact
-		raise FloatDomainError, self.inspect unless self.finite?
-		s, e = Math.frexp(self)
-		if e < MANT_DIG
-			Rational(Math.ldexp(s, MANT_DIG).to_i, 1<<(MANT_DIG-e))
+	def to_r
+		a = self.abs
+		q = a.to_r_exact
+		s = (self < 0.0) ? -1 : 1
+		if q.denominator < q.numerator
+			l = [q.numerator.div(q.denominator), 1]
+			r = Rational(*l)
+			return r*s if r.to_f == a
+			h = [l[0]+1, 1]
+			r = Rational(*h)
+			return r*s if r.to_f == a
 		else
-			Rational(self.to_i, 1)
+			h = [1, q.denominator.div(q.numerator)]
+			r = Rational(*h)
+			return r*s if r.to_f == a
+			l = [1, h[1]+1]
+			r = Rational(*l)
+			return r*s if r.to_f == a
+		end
+		loop do
+			m = [l[0]+h[0], l[1]+h[1]]
+			r = Rational(*m)
+			if r.to_f == a
+				return r*s
+			elsif r < q
+				l = m
+			else
+				h = m
+			end
 		end
 	end
 end
