@@ -103,7 +103,7 @@ class Rational
 				else
 					h = m
 				end
-				res << r*s
+				res << r*s if (r-q).abs < (res[-1]-q).abs
 			end
 		end
 	end
