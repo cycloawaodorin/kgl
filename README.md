@@ -34,7 +34,7 @@ For instance, (0.1).to_r_exact returns (3602879701896397/36028797018963968) whil
 
 ### `Rational#approx_reduction(all=false)`
 Without the following conditions, this returns `Rational` approximation of `self` with smaller denominator, by using Stern-Brocot tree.
-If `all` is true, this returns an `Array` includes all the path to `self`.
+If `all` is true, this returns an `Array` includes all the path to `self` of the Stern-Brocot tree.
 
 When `self==(0/1)` and `all` is false, this returns `self`.
 
@@ -47,10 +47,6 @@ When `self.denominator==1` and `all` is true, this returns a pair of `Rational`s
 When `self.numerator.abs==1` and `all` is false, this returns a `Rational` value with least denominator which is converted to `selft.to_f` by `Rational#to_f`.
 
 When `self.numerator.abs==1` and `all` is true, this returns a pair of `Rational`s with least and greatest denominator which are converted to `self.to_f` by `Rational#to_f`.
-
-Returns aprroximately same as `org` `Rational` value with smaller denominator.
-This method search for changing numerator and denominator of `self` by within `1<<dig`.
-`depth` is the maximum recursive depth of this method.
 
 ### `Integer#to_msm(fps=59.94)`
 Returns `"[minutes]:[seconds].[milliseconds]"` which corresponds to `self` frames.
