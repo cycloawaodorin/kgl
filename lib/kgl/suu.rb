@@ -22,21 +22,21 @@
 # a: 英語(アメリカ式)
 # b: 英語(ヨーロッパ式)
 #   参考：Name of a Number (http://isthe.com/chongo/tech/math/number/number.html)
-module Kgl
-	module SuuConstantsAndSubFunctions
-		Ichi = ['零', '一', '二', '三', '四', '五', '六', '七', '八', '九'].freeze
-		Juu = ['', '十', '百', '千'].freeze
-		Man = ['', '万', '億', '兆', '京', '垓', '杼', '穣', '溝', '澗', '正', '載', '極',
-			'恒河沙', '阿僧祇', '那由他', '不可思議', '無量大数'].freeze
-		Mi = ['', 'm', 'b', 'tr', 'quadr', 'quint', 'sext', 'sept', 'oct', 'non'].freeze
-		Un = ['', 'un', 'do', 'tre', 'quattuor', 'quin', 'sex', 'septen', 'octo', 'novem'].freeze
-		Gin = ['', 'dec', 'vigin', 'trigin', 'quadragin', 'quinquagin',
-			'sexagin', 'septuagin', 'octogin', 'nonagin'].freeze
-		Cen = ['', 'cen', 'ducen', 'trecen', 'quadringen', 'quingen',
-			'sescen', 'septingen', 'octingen', 'nongen'].freeze
-		One = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine','ten', 'eleven',
-			'twelve', 'thirteen', 'forteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'].freeze
-		Ten = ['', 'ten', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'].freeze
+module Kgl::SuuMod
+	Ichi = ['零', '一', '二', '三', '四', '五', '六', '七', '八', '九'].freeze
+	Juu = ['', '十', '百', '千'].freeze
+	Man = ['', '万', '億', '兆', '京', '垓', '杼', '穣', '溝', '澗', '正', '載', '極',
+		'恒河沙', '阿僧祇', '那由他', '不可思議', '無量大数'].freeze
+	Mi = ['', 'm', 'b', 'tr', 'quadr', 'quint', 'sext', 'sept', 'oct', 'non'].freeze
+	Un = ['', 'un', 'do', 'tre', 'quattuor', 'quin', 'sex', 'septen', 'octo', 'novem'].freeze
+	Gin = ['', 'dec', 'vigin', 'trigin', 'quadragin', 'quinquagin',
+		'sexagin', 'septuagin', 'octogin', 'nonagin'].freeze
+	Cen = ['', 'cen', 'ducen', 'trecen', 'quadringen', 'quingen',
+		'sescen', 'septingen', 'octingen', 'nongen'].freeze
+	One = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine','ten', 'eleven',
+		'twelve', 'thirteen', 'forteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'].freeze
+	Ten = ['', 'ten', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'].freeze
+	refine Integer do
 		module_function
 		def us(p)
 			if p == -1
@@ -153,7 +153,8 @@ module Kgl
 	end
 end
 class Integer
-	include Kgl::SuuConstantsAndSubFunctions
+	include Kgl::SuuMod
+	using Kgl::SuuMod
 	def express(lang='j', acc=7)
 		raise RangeError, 'negative integer' if self < 0
 		ni = self.to_s
