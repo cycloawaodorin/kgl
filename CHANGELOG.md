@@ -1,5 +1,8 @@
 # Change Log
 
+## 0.0.9 2026/04/23
+- Refine `Kgl.#rpw`.
+
 ## 0.0.8 2026/04/15
 - `Rational#approx_reduction(true)` includes only better approximations.
 
