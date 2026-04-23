@@ -15,12 +15,12 @@ module Kgl
 	module_function def rpw(n, sym='!#$%&*+,-./:;<=>?@')
 		ls = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789' + sym
 		m = ls.length
-		`openssl rand #{n}`.bytes.map do |i|
-			while m <= i
-				i = `openssl rand 1`.bytes[0]
-			end
-			ls[i]
-		end.join
+		nn = ((255+128)*n).ceildiv(m)
+		begin
+			ary = `openssl rand #{nn}`.bytes.select{ |i| i < m }
+			nn += n
+		end while ary.size < n
+		ary[...n].map{ |i| ls[i] }.join
 	rescue Errno::ENOENT => e
 		raise 'Kgl.#rpw requires openssl command'
 	end

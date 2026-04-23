@@ -1,18 +1,28 @@
 class << Math
 	alias ln log
+	if method_defined?(:log2)
+		alias lg log2
+	else
+		def lg(anti_logarithm)
+			log(2.0, anti_logarithm)
+		end
+	end
 end
 module Math
 	alias ln log
-	module_function
-	def log(base, anti_logarithm=base.tap{base=nil})
+	module_function def log(base, anti_logarithm=base.tap{base=nil})
 		if base.nil?
 			ln(anti_logarithm)
 		else
 			ln(anti_logarithm).quo(ln(base))
 		end
 	end
-	def lg(anti_logarithm)
-		log(2.0, anti_logarithm)
+	if method_defined?(:log2)
+		alias lg log2
+	else
+		def lg(anti_logarithm)
+			log(2.0, anti_logarithm)
+		end
 	end
 end
 
