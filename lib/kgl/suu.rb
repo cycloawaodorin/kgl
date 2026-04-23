@@ -22,7 +22,7 @@
 # a: 英語(アメリカ式)
 # b: 英語(ヨーロッパ式)
 #   参考：Name of a Number (http://isthe.com/chongo/tech/math/number/number.html)
-class Integer
+module Kgl
 	module SuuConstantsAndSubFunctions
 		Ichi = ['零', '一', '二', '三', '四', '五', '六', '七', '八', '九'].freeze
 		Juu = ['', '十', '百', '千'].freeze
@@ -151,7 +151,9 @@ class Integer
 			end
 		end
 	end
-	include SuuConstantsAndSubFunctions
+end
+class Integer
+	include Kgl::SuuConstantsAndSubFunctions
 	def express(lang='j', acc=7)
 		raise RangeError, 'negative integer' if self < 0
 		ni = self.to_s
